@@ -5,10 +5,17 @@ import { CategoryType } from "@prisma/client";
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
-        const type = searchParams.get("type") as CategoryType | null;
+        const validTypes = Object.values(CategoryType);
+        const typeParam = searchParams.get("type");
+        const type = validTypes.includes(typeParam as CategoryType) ? (typeParam as CategoryType) : undefined;
+
+        const whereClause: any = {};
+        if (type) {
+            whereClause.type = type;
+        }
 
         const categories = await prisma.category.findMany({
-            where: type ? { type } : {},
+            where: whereClause,
             orderBy: { name: "asc" },
         });
 

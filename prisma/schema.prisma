@@ -23,7 +23,7 @@ model Category {
   icon         String?
   type         CategoryType
   transactions Transaction[]
-  budget       Budget?
+  budgets      Budget[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
@@ -44,10 +44,14 @@ model Transaction {
 model Budget {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   amount     Float
+  month      Int      @default(0) // 0 means all months/default, but we will use specific months
+  year       Int      @default(0) // 0 means all years/default
   category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String   @unique @db.ObjectId
+  categoryId String   @db.ObjectId
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@unique([categoryId, month, year])
 }
 
 model Receipt {

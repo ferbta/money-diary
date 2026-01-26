@@ -1,25 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
+        const { searchParams } = new URL(request.url);
+        const month = searchParams.get("month");
+        const year = searchParams.get("year") || new Date().getFullYear().toString();
+
+        let startDate: Date;
+        let endDate: Date;
+
+        if (month) {
+            startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+            endDate = new Date(parseInt(year), parseInt(month), 0, 23, 59, 59, 999);
+        } else {
+            startDate = new Date(parseInt(year), 0, 1);
+            endDate = new Date(parseInt(year), 11, 31, 23, 59, 59, 999);
+        }
+
         const budgets = await prisma.budget.findMany({
             include: {
                 category: true,
             },
         });
 
-        // Calculate usage for each budget (based on current month)
-        const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
-
         const budgetsWithUsage = await Promise.all(
             budgets.map(async (budget) => {
                 const transactions = await prisma.transaction.aggregate({
                     where: {
                         categoryId: budget.categoryId,
-                        date: { gte: startOfMonth, lte: endOfMonth },
+                        date: { gte: startDate, lte: endDate },
                     },
                     _sum: { amount: true },
                 });

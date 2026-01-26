@@ -98,7 +98,7 @@ const CategoriesPage = () => {
                 <p className="text-slate-400 mt-1">Sắp xếp các khoản thu nhập và chi phí của bạn để theo dõi tốt hơn</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Create Category Form */}
                 <div className="md:col-span-1">
                     <Card title="Thêm danh mục" subtitle="Tạo phân loại mới">
@@ -137,7 +137,7 @@ const CategoriesPage = () => {
                 </div>
 
                 {/* Categories List */}
-                <div className="md:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-6">
                     <section>
                         <h2 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4 ml-1">Danh mục chi phí</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -151,7 +151,7 @@ const CategoriesPage = () => {
                                     </div>
                                     <button
                                         onClick={() => handleDelete(cat.id)}
-                                        className="p-2 text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                                        className="p-2 text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                                     >
                                         <Trash2 size={18} />
                                     </button>
@@ -176,7 +176,7 @@ const CategoriesPage = () => {
                                     </div>
                                     <button
                                         onClick={() => handleDelete(cat.id)}
-                                        className="p-2 text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+                                        className="p-2 text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                                     >
                                         <Trash2 size={18} />
                                     </button>

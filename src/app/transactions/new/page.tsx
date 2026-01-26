@@ -11,6 +11,7 @@ import Card from "@/components/ui/Card";
 import ReceiptUpload from "@/components/ReceiptUpload";
 import Link from "next/link";
 import { numberToVietnameseWords } from "@/lib/vietnamese-words";
+import DatePicker from "@/components/ui/DatePicker";
 
 const NewTransactionPage = () => {
     const router = useRouter();
@@ -82,7 +83,7 @@ const NewTransactionPage = () => {
     const filteredCategories = categories.filter(c => c.type === type);
 
     return (
-        <div className="max-w-3xl mx-auto w-full space-y-8 pb-20">
+        <div className="max-w-3xl mx-auto w-full space-y-8 pb-32">
             <div className="flex items-center gap-4">
                 <Link href="/dashboard" className="p-2 hover:bg-slate-900 rounded-xl text-slate-400 hover:text-white transition-all border border-slate-800">
                     <ArrowLeft size={20} />
@@ -144,11 +145,10 @@ const NewTransactionPage = () => {
                                 required
                             />
 
-                            <Input
+                            <DatePicker
                                 label="Ngày giao dịch"
-                                type="date"
                                 value={date}
-                                onChange={(e) => setDate(e.target.value)}
+                                onChange={setDate}
                                 required
                             />
                         </div>

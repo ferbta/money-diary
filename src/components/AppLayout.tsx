@@ -7,10 +7,10 @@ interface AppLayoutProps {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     return (
-        <div className="flex min-h-screen bg-slate-950 text-slate-200 selection:bg-blue-500/30">
+        <div className="flex flex-col lg:flex-row min-h-screen bg-slate-950 text-slate-200 selection:bg-blue-500/30 overflow-x-hidden">
             <Navigation />
-            <main className="flex-1 p-4 lg:p-8 overflow-hidden h-screen flex flex-col">
-                <div className="flex-1 overflow-y-auto scrollbar-hide">
+            <main className="w-full p-4 lg:p-8 pb-32 lg:pb-8">
+                <div className="max-w-7xl mx-auto w-full">
                     {children}
                 </div>
             </main>

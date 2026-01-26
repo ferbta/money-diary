@@ -115,16 +115,18 @@ const TransactionDetailPage = () => {
             {/* Main Info */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="md:col-span-2 space-y-6">
-                    <Card className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className={`p-4 rounded-3xl mb-6 ${transaction.type === "INCOME" ? "bg-emerald-500/10 text-emerald-500" : "bg-rose-500/10 text-rose-500"}`}>
-                            {transaction.type === "INCOME" ? <Calendar size={48} /> : <Calendar size={48} />}
+                    <Card className="p-6 md:p-8">
+                        <div className="flex items-center gap-4 md:gap-6">
+                            <div className={`shrink-0 p-3 md:p-4 rounded-full ${transaction.type === "INCOME" ? "bg-emerald-500/10 text-emerald-500" : "bg-rose-500/10 text-rose-500"}`}>
+                                <Calendar className="w-6 h-6 md:w-8 md:h-8" />
+                            </div>
+                            <h2 className="text-3xl md:text-4xl font-black text-white whitespace-nowrap">
+                                {transaction.type === "INCOME" ? "+" : "-"} {transaction.amount.toLocaleString("vi-VN")}₫
+                            </h2>
+                            <p className="text-slate-400 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-70 hidden sm:block">
+                                {transaction.type === "INCOME" ? "Đã cộng vào số dư của bạn" : "Đã trừ từ tài khoản của bạn"}
+                            </p>
                         </div>
-                        <h2 className="text-5xl font-black text-white mb-2">
-                            {transaction.amount.toLocaleString("vi-VN")}₫
-                        </h2>
-                        <p className="text-slate-400 font-medium">
-                            {transaction.type === "INCOME" ? "Đã cộng vào số dư của bạn" : "Đã trừ từ tài khoản của bạn"}
-                        </p>
                     </Card>
 
                     <Card title="Ghi chú">

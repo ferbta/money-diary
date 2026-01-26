@@ -6,8 +6,8 @@ import AppLayout from "@/components/AppLayout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FinFlow - Personal Finance Tracker",
-  description: "Track your daily income and expenses with ease",
+  title: "Quản lý tài chính",
+  description: "Quản lý tài chính cá nhân",
 };
 
 export default function RootLayout({

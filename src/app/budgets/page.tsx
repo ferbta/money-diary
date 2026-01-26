@@ -219,7 +219,7 @@ const BudgetsPage = () => {
                                 </div>
                                 <div className="text-right">
                                     <p className="text-indigo-100 text-[10px] font-bold uppercase tracking-tighter opacity-80 mb-1">Vượt mức</p>
-                                    <p className="text-xl font-bold text-white">{(totalBudget - totalUsed).toLocaleString("vi-VN")}₫</p>
+                                    <p className="text-xl font-bold text-white">{totalUsed > totalBudget ? (totalUsed - totalBudget).toLocaleString("vi-VN") : "0"}₫</p>
                                 </div>
                             </div>
                         </div>

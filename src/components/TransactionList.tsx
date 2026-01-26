@@ -71,10 +71,10 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, selecte
                                         <IconRenderer name={tx.category.icon || "Tag"} size={28} />
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
+                                        <h4 className="font-semibold text-white group-hover:text-blue-400 transition-colors text-sm md:text-base">
                                             {tx.category.name}
                                         </h4>
-                                        <p className="text-sm text-slate-500 truncate max-w-[200px]">
+                                        <p className="text-xs md:text-sm text-slate-500 truncate max-w-[120px] sm:max-w-[200px]">
                                             {tx.description || "Không có mô tả"}
                                         </p>
                                     </div>
@@ -83,7 +83,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, selecte
                                 <div className="flex items-center gap-6">
                                     <div className="text-right">
                                         <p className={cn(
-                                            "text-lg font-bold",
+                                            "text-base md:text-lg font-bold",
                                             tx.type === "INCOME" ? "text-emerald-500" : "text-white"
                                         )}>
                                             {tx.type === "INCOME" ? "+" : "-"}{tx.amount.toLocaleString("vi-VN")}₫

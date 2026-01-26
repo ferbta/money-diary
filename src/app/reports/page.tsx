@@ -16,7 +16,8 @@ import {
 import { Bar, Pie } from "react-chartjs-2";
 import Card from "@/components/ui/Card";
 import Select from "@/components/ui/Select";
-import { BarChart3, PieChart as PieChartIcon, TrendingUp, TrendingDown, Layers } from "lucide-react";
+import { BarChart3, PieChart as PieChartIcon, TrendingUp, TrendingDown, Layers, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 ChartJS.register(
     CategoryScale,
@@ -33,6 +34,7 @@ ChartJS.register(
 const ReportsPage = () => {
     const [reportData, setReportData] = React.useState<any>(null);
     const [isLoading, setIsLoading] = React.useState(true);
+    const [viewMode, setViewMode] = React.useState<"month" | "year">("month");
     const [month, setMonth] = React.useState(new Date().getMonth() + 1);
     const [year, setYear] = React.useState(new Date().getFullYear());
 
@@ -40,7 +42,11 @@ const ReportsPage = () => {
         const fetchReport = async () => {
             try {
                 setIsLoading(true);
-                const response = await fetch(`/api/reports?month=${month}&year=${year}`);
+                const queryParams = new URLSearchParams();
+                if (viewMode === "month") queryParams.append("month", month.toString());
+                queryParams.append("year", year.toString());
+
+                const response = await fetch(`/api/reports?${queryParams.toString()}`);
                 const data = await response.json();
                 setReportData(data);
             } catch (err) {
@@ -50,7 +56,33 @@ const ReportsPage = () => {
             }
         };
         fetchReport();
-    }, [month, year]);
+    }, [month, year, viewMode]);
+
+    const handlePrev = () => {
+        if (viewMode === "month") {
+            if (month === 1) {
+                setMonth(12);
+                setYear(prev => prev - 1);
+            } else {
+                setMonth(prev => prev - 1);
+            }
+        } else {
+            setYear(prev => prev - 1);
+        }
+    };
+
+    const handleNext = () => {
+        if (viewMode === "month") {
+            if (month === 12) {
+                setMonth(1);
+                setYear(prev => prev + 1);
+            } else {
+                setMonth(prev => prev + 1);
+            }
+        } else {
+            setYear(prev => prev + 1);
+        }
+    };
 
     const barChartData = {
         labels: reportData?.monthlyTrend?.map((d: any) => `Tháng ${d.month}`) || [],
@@ -113,72 +145,93 @@ const ReportsPage = () => {
 
     return (
         <div className="max-w-7xl mx-auto w-full space-y-8 pb-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-white tracking-tight">Báo Cáo Tài Chính</h1>
-                    <p className="text-slate-400 mt-1">Phân tích sâu về thói quen chi tiêu và tăng trưởng thu nhập của bạn</p>
+                    <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Báo Cáo Tài Chính</h1>
+                    <p className="text-slate-400 text-sm md:text-base mt-1 italic">Phân tích thói quen chi tiêu và thu nhập của bạn</p>
                 </div>
-                <div className="flex gap-3">
-                    <Select
-                        value={month}
-                        onChange={(e) => setMonth(parseInt(e.target.value))}
-                        options={[
-                            { label: "Tháng 1", value: 1 }, { label: "Tháng 2", value: 2 },
-                            { label: "Tháng 3", value: 3 }, { label: "Tháng 4", value: 4 },
-                            { label: "Tháng 5", value: 5 }, { label: "Tháng 6", value: 6 },
-                            { label: "Tháng 7", value: 7 }, { label: "Tháng 8", value: 8 },
-                            { label: "Tháng 9", value: 9 }, { label: "Tháng 10", value: 10 },
-                            { label: "Tháng 11", value: 11 }, { label: "Tháng 12", value: 12 },
-                        ]}
-                        className="w-40"
-                    />
-                    <Select
-                        value={year}
-                        onChange={(e) => setYear(parseInt(e.target.value))}
-                        options={[
-                            { label: "2024", value: 2024 },
-                            { label: "2025", value: 2025 },
-                            { label: "2026", value: 2026 },
-                        ]}
-                        className="w-32"
-                    />
+
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                    {/* View Mode Toggle */}
+                    <div className="flex p-1 bg-slate-900 border border-slate-800 rounded-2xl">
+                        <button
+                            onClick={() => setViewMode("month")}
+                            className={cn(
+                                "px-4 py-2 text-xs font-bold rounded-xl transition-all",
+                                viewMode === "month" ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40" : "text-slate-500 hover:text-slate-400"
+                            )}
+                        >
+                            Tháng
+                        </button>
+                        <button
+                            onClick={() => setViewMode("year")}
+                            className={cn(
+                                "px-4 py-2 text-xs font-bold rounded-xl transition-all",
+                                viewMode === "year" ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40" : "text-slate-500 hover:text-slate-400"
+                            )}
+                        >
+                            Năm
+                        </button>
+                    </div>
+
+                    {/* Period Navigator */}
+                    <div className="flex items-center gap-4 bg-slate-900/50 border border-slate-800 rounded-2xl px-2 py-1">
+                        <button
+                            onClick={handlePrev}
+                            className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent hover:border-slate-700"
+                        >
+                            <ChevronLeft size={20} />
+                        </button>
+                        <div className="flex items-center gap-2 px-2">
+                            <Calendar size={18} className="text-blue-500" />
+                            <span className="text-lg font-black text-white min-w-[140px] text-center">
+                                {viewMode === "month" ? `Tháng ${month.toString().padStart(2, '0')} ${year}` : `Năm ${year}`}
+                            </span>
+                        </div>
+                        <button
+                            onClick={handleNext}
+                            className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent hover:border-slate-700"
+                        >
+                            <ChevronRight size={20} />
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <Card className="md:col-span-1 border-none bg-emerald-500/10 hover:bg-emerald-500/20 transition-all group">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <Card className="border-none bg-emerald-500/10 hover:bg-emerald-500/20 transition-all group">
                     <TrendingUp size={32} className="text-emerald-500 mb-4 group-hover:scale-110 transition-transform" />
-                    <p className="text-xs font-black uppercase tracking-widest text-emerald-600 mb-1">Thu nhập giai đoạn</p>
-                    <p className="text-3xl font-black text-white">{totalIncome.toLocaleString("vi-VN")}₫</p>
+                    <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-emerald-600 mb-1">Thu nhập giai đoạn</p>
+                    <p className="text-2xl md:text-3xl font-black text-white">{totalIncome.toLocaleString("vi-VN")}₫</p>
                 </Card>
-                <Card className="md:col-span-1 border-none bg-rose-500/10 hover:bg-rose-500/20 transition-all group">
+                <Card className="border-none bg-rose-500/10 hover:bg-rose-500/20 transition-all group">
                     <TrendingDown size={32} className="text-rose-500 mb-4 group-hover:scale-110 transition-transform" />
-                    <p className="text-xs font-black uppercase tracking-widest text-rose-600 mb-1">Chi phí giai đoạn</p>
-                    <p className="text-3xl font-black text-white">{totalExpense.toLocaleString("vi-VN")}₫</p>
+                    <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-rose-600 mb-1">Chi phí giai đoạn</p>
+                    <p className="text-2xl md:text-3xl font-black text-white">{totalExpense.toLocaleString("vi-VN")}₫</p>
                 </Card>
-                <Card className="md:col-span-1 border-none bg-blue-500/10 hover:bg-blue-500/20 transition-all group">
+                <Card className="border-none bg-blue-500/10 hover:bg-blue-500/20 transition-all group">
                     <BarChart3 size={32} className="text-blue-500 mb-4 group-hover:scale-110 transition-transform" />
-                    <p className="text-xs font-black uppercase tracking-widest text-blue-600 mb-1">Tiền tiết kiệm</p>
-                    <p className="text-3xl font-black text-white">{(totalIncome - totalExpense).toLocaleString("vi-VN")}₫</p>
+                    <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-blue-600 mb-1">Tiền tiết kiệm</p>
+                    <p className="text-2xl md:text-3xl font-black text-white">{(totalIncome - totalExpense).toLocaleString("vi-VN")}₫</p>
                 </Card>
-                <Card className="md:col-span-1 border-none bg-indigo-500/10 hover:bg-indigo-500/20 transition-all group">
+                <Card className="border-none bg-indigo-500/10 hover:bg-indigo-500/20 transition-all group">
                     <Layers size={32} className="text-indigo-500 mb-4 group-hover:scale-110 transition-transform" />
-                    <p className="text-xs font-black uppercase tracking-widest text-indigo-600 mb-1">Tỷ lệ tiết kiệm</p>
-                    <p className="text-3xl font-black text-white">
+                    <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-indigo-600 mb-1">Tỷ lệ tiết kiệm</p>
+                    <p className="text-2xl md:text-3xl font-black text-white">
                         {totalIncome > 0 ? Math.round(((totalIncome - totalExpense) / totalIncome) * 100) : 0}%
                     </p>
                 </Card>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
                 <div className="lg:col-span-8">
-                    <Card className="h-[500px] flex flex-col">
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <Card className="h-[400px] md:h-[500px] flex flex-col p-4 md:p-8">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                            <h3 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
                                 <BarChart3 size={20} className="text-blue-500" />
                                 Xu hướng hàng tháng
                             </h3>
-                            <span className="text-xs font-bold text-slate-500 px-3 py-1 bg-slate-900 rounded-full border border-slate-800 italic">Thu nhập vs Chi phí</span>
+                            <span className="w-fit text-[10px] font-bold text-slate-500 px-3 py-1 bg-slate-900 rounded-full border border-slate-800 italic">Thu nhập vs Chi phí</span>
                         </div>
                         <div className="flex-1 w-full relative">
                             {isLoading ? (
@@ -191,13 +244,13 @@ const ReportsPage = () => {
                 </div>
 
                 <div className="lg:col-span-4">
-                    <Card className="h-[500px] flex flex-col">
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <Card className="h-[400px] md:h-[500px] flex flex-col p-4 md:p-8">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                            <h3 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
                                 <PieChartIcon size={20} className="text-indigo-500" />
                                 Phân bổ chi tiêu
                             </h3>
-                            <span className="text-xs font-bold text-slate-500 px-3 py-1 bg-slate-900 rounded-full border border-slate-800 italic">Theo danh mục</span>
+                            <span className="w-fit text-[10px] font-bold text-slate-500 px-3 py-1 bg-slate-900 rounded-full border border-slate-800 italic">Theo danh mục</span>
                         </div>
                         <div className="flex-1 w-full relative">
                             {isLoading ? (

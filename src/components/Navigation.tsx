@@ -29,41 +29,24 @@ const navItems = [
 
 const Navigation = () => {
     const pathname = usePathname();
-    const [isOpen, setIsOpen] = React.useState(false);
 
     return (
         <>
-            {/* Mobile Toggle */}
-            <button
-                className="fixed top-4 left-4 z-50 p-2 bg-slate-900 border border-slate-800 rounded-lg lg:hidden"
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                {isOpen ? <X size={20} className="text-white" /> : <Menu size={20} className="text-white" />}
-            </button>
-
-            {/* Backdrop */}
-            {isOpen && (
-                <div
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
-                    onClick={() => setIsOpen(false)}
-                />
-            )}
-
-            {/* Sidebar */}
-            <aside className={cn(
-                "fixed inset-y-0 left-0 z-40 w-64 bg-slate-950/80 backdrop-blur-xl border-r border-slate-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto",
-                isOpen ? "translate-x-0" : "-translate-x-full"
-            )}>
+            {/* Sidebar for Desktop */}
+            <aside className="hidden lg:flex flex-col w-72 h-screen sticky top-0 bg-slate-950/80 backdrop-blur-xl border-r border-slate-800">
                 <div className="flex flex-col h-full">
-                    <div className="p-8">
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent italic">
-                            FinFlow
+                    <Link href="/dashboard" className="p-8 pb-4 flex items-center gap-4 group">
+                        <div className="shrink-0 w-14 h-14 rounded-[1.25rem] overflow-hidden bg-white/5 border border-white/10 group-hover:scale-110 transition-transform">
+                            <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+                        </div>
+                        <h1 className="text-xl font-black bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent italic leading-tight">
+                            Quản lý tài chính
                         </h1>
-                    </div>
+                    </Link>
 
                     <nav className="flex-1 px-4 space-y-2">
                         {navItems.map((item) => {
-                            const isActive = pathname.startsWith(item.href);
+                            const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
                             return (
                                 <Link
                                     key={item.name}
@@ -74,7 +57,6 @@ const Navigation = () => {
                                             ? "bg-blue-600/10 text-blue-400 border border-blue-600/20"
                                             : "text-slate-400 hover:text-white hover:bg-slate-900"
                                     )}
-                                    onClick={() => setIsOpen(false)}
                                 >
                                     <item.icon size={20} className={cn(
                                         "transition-colors",
@@ -99,6 +81,41 @@ const Navigation = () => {
                     </div>
                 </div>
             </aside>
+
+            {/* Top Navigation for Mobile (Logo) */}
+            <header className="lg:hidden sticky top-0 z-40 w-full bg-slate-950/80 backdrop-blur-xl border-b border-slate-800 p-4">
+                <Link href="/dashboard" className="flex items-center gap-3">
+                    <div className="shrink-0 w-10 h-10 rounded-xl overflow-hidden bg-white/5 border border-white/10">
+                        <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+                    </div>
+                    <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent italic">
+                        Quản lý tài chính
+                    </h1>
+                </Link>
+            </header>
+
+            {/* Bottom Navigation for Mobile/Tablet */}
+            <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 px-4 pb-6 pt-2 bg-slate-950/80 backdrop-blur-xl border-t border-slate-800 flex justify-around items-center">
+                {navItems.map((item) => {
+                    const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                    return (
+                        <Link
+                            key={item.name}
+                            href={item.href}
+                            className={cn(
+                                "flex flex-col items-center gap-1 p-2 rounded-xl transition-all",
+                                isActive ? "text-blue-400" : "text-slate-500"
+                            )}
+                        >
+                            <item.icon size={22} className={cn(
+                                "transition-colors",
+                                isActive ? "text-blue-400" : "text-slate-500"
+                            )} />
+                            <span className="text-[10px] font-bold uppercase tracking-tighter">{item.name}</span>
+                        </Link>
+                    );
+                })}
+            </nav>
         </>
     );
 };

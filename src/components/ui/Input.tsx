@@ -27,6 +27,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         error ? "border-rose-500 focus:ring-rose-500" : "hover:border-slate-700",
                         className
                     )}
+                    onClick={(e) => {
+                        if (props.type === "date") {
+                            try {
+                                (e.target as any).showPicker();
+                            } catch (error) {
+                                // Fallback for browsers that don't support showPicker()
+                            }
+                        }
+                    }}
                     {...props}
                 />
                 {error && (

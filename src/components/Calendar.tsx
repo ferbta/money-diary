@@ -26,9 +26,10 @@ interface CalendarProps {
     selectedDate: Date | null;
     onDateSelect: (date: Date) => void;
     highlightedDates?: Date[];
+    className?: string;
 }
 
-const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlightedDates = [] }) => {
+const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlightedDates = [], className }) => {
     const [currentMonth, setCurrentMonth] = React.useState(new Date());
 
     const days = eachDayOfInterval({
@@ -40,25 +41,23 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
     const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
     return (
-        <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-xl">
-            <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-bold text-white px-2 capitalize">
+        <div className={cn("bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-xl", className)}>
+            <div className="flex items-center justify-between mb-8 px-2">
+                <button
+                    onClick={prevMonth}
+                    className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-colors border border-slate-800"
+                >
+                    <ChevronLeft size={20} />
+                </button>
+                <h2 className="text-lg font-bold text-white capitalize">
                     {format(currentMonth, "MMMM yyyy", { locale: vi })}
                 </h2>
-                <div className="flex gap-2">
-                    <button
-                        onClick={prevMonth}
-                        className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-colors border border-slate-800"
-                    >
-                        <ChevronLeft size={20} />
-                    </button>
-                    <button
-                        onClick={nextMonth}
-                        className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-colors border border-slate-800"
-                    >
-                        <ChevronRight size={20} />
-                    </button>
-                </div>
+                <button
+                    onClick={nextMonth}
+                    className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-colors border border-slate-800"
+                >
+                    <ChevronRight size={20} />
+                </button>
             </div>
 
             <div className="grid grid-cols-7 gap-1 mb-2">

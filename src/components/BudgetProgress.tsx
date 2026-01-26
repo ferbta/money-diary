@@ -12,15 +12,22 @@ interface BudgetProgressProps {
     category: string;
     limit: number;
     used: number;
+    onClick?: () => void;
 }
 
-const BudgetProgress: React.FC<BudgetProgressProps> = ({ category, limit, used }) => {
+const BudgetProgress: React.FC<BudgetProgressProps> = ({ category, limit, used, onClick }) => {
     const percentage = Math.min((used / limit) * 100, 100);
     const remaining = limit - used;
     const isOver = used > limit;
 
     return (
-        <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all">
+        <div
+            onClick={onClick}
+            className={cn(
+                "bg-slate-900/40 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all",
+                onClick && "cursor-pointer hover:bg-slate-900/60 active:scale-[0.98] group"
+            )}
+        >
             <div className="flex justify-between items-end mb-4">
                 <div>
                     <h4 className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">{category}</h4>

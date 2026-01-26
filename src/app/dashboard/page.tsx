@@ -55,18 +55,18 @@ const DashboardPage = () => {
     return (
         <div className="max-w-7xl mx-auto w-full space-y-8">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-white tracking-tight">Tổng Quan Tài Chính</h1>
-                    <p className="text-slate-400 mt-1">Quản lý và theo dõi tài sản của bạn</p>
+                    <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Tổng Quan Tài Chính</h1>
+                    <p className="text-slate-400 text-sm md:text-base mt-1">Quản lý và theo dõi tài sản của bạn</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <Button variant="outline" className="hidden sm:flex items-center gap-2">
                         <Download size={18} />
                         Xuất dữ liệu
                     </Button>
-                    <Link href="/transactions/new">
-                        <Button className="flex items-center gap-2 pr-5">
+                    <Link href="/transactions/new" className="w-full sm:w-auto">
+                        <Button className="w-full sm:w-auto flex items-center justify-center gap-2 pr-5">
                             <Plus size={18} />
                             Thêm giao dịch
                         </Button>
@@ -106,11 +106,11 @@ const DashboardPage = () => {
 
                 {/* Right Column: Transactions */}
                 <div className="lg:col-span-8">
-                    <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 min-h-[600px] shadow-xl">
-                        <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-2xl font-bold text-white">
+                    <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-8 min-h-[400px] md:min-h-[600px] shadow-xl">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                            <h2 className="text-xl md:text-2xl font-bold text-white">
                                 Giao dịch
-                                <span className="ml-3 text-sm font-medium text-slate-500">
+                                <span className="ml-3 text-xs md:text-sm font-medium text-slate-500">
                                     {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "Gần đây"}
                                 </span>
                             </h2>

@@ -16,8 +16,12 @@ import {
 import { Bar, Pie } from "react-chartjs-2";
 import Card from "@/components/ui/Card";
 import Select from "@/components/ui/Select";
-import { BarChart3, PieChart as PieChartIcon, TrendingUp, TrendingDown, Layers, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { BarChart3, PieChart as PieChartIcon, TrendingUp, TrendingDown, Layers, ChevronLeft, ChevronRight, Calendar, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Modal from "@/components/ui/Modal";
+import TransactionList from "@/components/TransactionList";
+import { TransactionWithCategoryAndReceipts } from "@/lib/types";
+import { Chart as ChartEvent, getElementAtEvent } from "react-chartjs-2";
 
 ChartJS.register(
     CategoryScale,
@@ -37,6 +41,15 @@ const ReportsPage = () => {
     const [viewMode, setViewMode] = React.useState<"month" | "year">("month");
     const [month, setMonth] = React.useState(new Date().getMonth() + 1);
     const [year, setYear] = React.useState(new Date().getFullYear());
+
+    // Drill-down Modal State
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [modalTitle, setModalTitle] = React.useState("");
+    const [drilledTransactions, setDrilledTransactions] = React.useState<TransactionWithCategoryAndReceipts[]>([]);
+    const [isFetchingDrill, setIsFetchingDrill] = React.useState(false);
+
+    const barChartRef = React.useRef<any>(null);
+    const pieChartRef = React.useRef<any>(null);
 
     React.useEffect(() => {
         const fetchReport = async () => {
@@ -82,6 +95,65 @@ const ReportsPage = () => {
         } else {
             setYear(prev => prev + 1);
         }
+    };
+
+    const handleDrillDown = async (params: { type?: string, categoryId?: string, month?: number, title: string }) => {
+        setModalTitle(params.title);
+        setIsModalOpen(true);
+        setIsFetchingDrill(true);
+        try {
+            const queryParams = new URLSearchParams();
+            if (params.type) queryParams.append("type", params.type);
+            if (params.categoryId) queryParams.append("categoryId", params.categoryId);
+
+            // If drilling by month in a yearly view, use the clicked month
+            const drillMonth = params.month || (viewMode === "month" ? month : undefined);
+            const drillYear = year;
+
+            if (drillMonth) queryParams.append("month", drillMonth.toString());
+            queryParams.append("year", drillYear.toString());
+
+            const response = await fetch(`/api/transactions?${queryParams.toString()}`);
+            const data = await response.json();
+            setDrilledTransactions(data);
+        } catch (err) {
+            console.error("Drill-down failed:", err);
+        } finally {
+            setIsFetchingDrill(false);
+        }
+    };
+
+    const onBarClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+        const { current: chart } = barChartRef;
+        if (!chart) return;
+
+        const element = getElementAtEvent(chart, event);
+        if (!element.length) return;
+
+        const { index } = element[0];
+        const dataPoint = reportData.monthlyTrend[index];
+
+        handleDrillDown({
+            month: parseInt(dataPoint.month),
+            title: `Giao dịch Tháng ${dataPoint.month} năm ${year}`
+        });
+    };
+
+    const onPieClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+        const { current: chart } = pieChartRef;
+        if (!chart) return;
+
+        const element = getElementAtEvent(chart, event);
+        if (!element.length) return;
+
+        const { index } = element[0];
+        const category = reportData.categoryBreakdown[index];
+
+        handleDrillDown({
+            type: "EXPENSE",
+            categoryId: category.id,
+            title: `Chi tiêu: ${category.category}`
+        });
     };
 
     const barChartData = {
@@ -199,16 +271,26 @@ const ReportsPage = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <Card className="border-none bg-emerald-500/10 hover:bg-emerald-500/20 transition-all group">
-                    <TrendingUp size={32} className="text-emerald-500 mb-4 group-hover:scale-110 transition-transform" />
-                    <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-emerald-600 mb-1">Thu nhập giai đoạn</p>
-                    <p className="text-2xl md:text-3xl font-black text-white">{totalIncome.toLocaleString("vi-VN")}₫</p>
-                </Card>
-                <Card className="border-none bg-rose-500/10 hover:bg-rose-500/20 transition-all group">
-                    <TrendingDown size={32} className="text-rose-500 mb-4 group-hover:scale-110 transition-transform" />
-                    <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-rose-600 mb-1">Chi phí giai đoạn</p>
-                    <p className="text-2xl md:text-3xl font-black text-white">{totalExpense.toLocaleString("vi-VN")}₫</p>
-                </Card>
+                <button
+                    onClick={() => handleDrillDown({ type: "INCOME", title: `Thu nhập: ${viewMode === "month" ? `Tháng ${month}/${year}` : `Năm ${year}`}` })}
+                    className="text-left w-full h-full"
+                >
+                    <Card className="h-full border-none bg-emerald-500/10 hover:bg-emerald-500/20 transition-all group cursor-pointer active:scale-95">
+                        <TrendingUp size={32} className="text-emerald-500 mb-4 group-hover:scale-110 transition-transform" />
+                        <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-emerald-600 mb-1">Thu nhập giai đoạn</p>
+                        <p className="text-2xl md:text-3xl font-black text-white">{totalIncome.toLocaleString("vi-VN")}₫</p>
+                    </Card>
+                </button>
+                <button
+                    onClick={() => handleDrillDown({ type: "EXPENSE", title: `Chi phí: ${viewMode === "month" ? `Tháng ${month}/${year}` : `Năm ${year}`}` })}
+                    className="text-left w-full h-full"
+                >
+                    <Card className="h-full border-none bg-rose-500/10 hover:bg-rose-500/20 transition-all group cursor-pointer active:scale-95">
+                        <TrendingDown size={32} className="text-rose-500 mb-4 group-hover:scale-110 transition-transform" />
+                        <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-rose-600 mb-1">Chi phí giai đoạn</p>
+                        <p className="text-2xl md:text-3xl font-black text-white">{totalExpense.toLocaleString("vi-VN")}₫</p>
+                    </Card>
+                </button>
                 <Card className="border-none bg-blue-500/10 hover:bg-blue-500/20 transition-all group">
                     <BarChart3 size={32} className="text-blue-500 mb-4 group-hover:scale-110 transition-transform" />
                     <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-blue-600 mb-1">Tiền tiết kiệm</p>
@@ -237,7 +319,12 @@ const ReportsPage = () => {
                             {isLoading ? (
                                 <div className="absolute inset-0 flex items-center justify-center text-slate-600 italic">Đang tải dữ liệu biểu đồ...</div>
                             ) : (
-                                <Bar data={barChartData} options={chartOptions} />
+                                <Bar
+                                    ref={barChartRef}
+                                    data={barChartData}
+                                    options={chartOptions}
+                                    onClick={onBarClick}
+                                />
                             )}
                         </div>
                     </Card>
@@ -256,12 +343,43 @@ const ReportsPage = () => {
                             {isLoading ? (
                                 <div className="absolute inset-0 flex items-center justify-center text-slate-600 italic">Đang tải dữ liệu biểu đồ...</div>
                             ) : (
-                                <Pie data={pieChartData} options={{ ...chartOptions, scales: undefined }} />
+                                <Pie
+                                    ref={pieChartRef}
+                                    data={pieChartData}
+                                    options={{ ...chartOptions, scales: undefined }}
+                                    onClick={onPieClick}
+                                />
                             )}
                         </div>
                     </Card>
                 </div>
             </div>
+
+            {/* Drill-down Modal */}
+            <Modal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                title={modalTitle}
+                maxWidth="3xl"
+            >
+                {isFetchingDrill ? (
+                    <div className="flex flex-col items-center justify-center py-20 animate-pulse">
+                        <div className="w-12 h-12 bg-slate-800 rounded-full mb-4" />
+                        <div className="h-4 w-32 bg-slate-800 rounded mb-2" />
+                    </div>
+                ) : (
+                    <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                        {drilledTransactions.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-20 text-slate-500 italic">
+                                <Info size={48} className="opacity-20 mb-4" />
+                                <p>Không có giao dịch nào trong giai đoạn này</p>
+                            </div>
+                        ) : (
+                            <TransactionList transactions={drilledTransactions} />
+                        )}
+                    </div>
+                )}
+            </Modal>
         </div>
     );
 };

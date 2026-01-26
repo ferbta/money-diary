@@ -9,11 +9,16 @@ export async function GET(request: NextRequest) {
         const year = searchParams.get("year");
         const date = searchParams.get("date"); // YYYY-MM-DD
         const categoryId = searchParams.get("categoryId");
+        const type = searchParams.get("type");
 
         let where: any = {};
 
         if (categoryId) {
             where.categoryId = categoryId;
+        }
+
+        if (type) {
+            where.type = type as TransactionType;
         }
 
         if (date) {

@@ -11,8 +11,9 @@ function cn(...inputs: ClassValue[]) {
 export const ICON_OPTIONS = [
     "Tag", "ShoppingCart", "Utensils", "Bus", "Home", "Wine", "Coffee", "Gamepad",
     "GraduationCap", "Hospital", "Briefcase", "Dumbbell", "Plug", "Tv", "Smartphone",
-    "Umbrella", "Smile", "Heart", "Star", "Flame", "Zap", "Music", "Camera", "Languages",
-    "Wallet", "CreditCard", "PiggyBank", "Banknote", "TrendingUp", "Trophy", "Gift", "Plane", "Baby"
+    "Umbrella", "Smile", "Heart", "Star", "Flame", "Zap", "Music", "Camera", "Languages", "Fuel",
+    "Wallet", "CreditCard", "PiggyBank", "Banknote", "TrendingUp", "Trophy", "Gift", "Plane", "Baby",
+    "Zap", "Droplet", "HouseWifi"
 ];
 
 interface IconPickerProps {

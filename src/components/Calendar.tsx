@@ -33,8 +33,8 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
     const [currentMonth, setCurrentMonth] = React.useState(new Date());
 
     const days = eachDayOfInterval({
-        start: startOfWeek(startOfMonth(currentMonth)),
-        end: endOfWeek(endOfMonth(currentMonth)),
+        start: startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 1 }),
+        end: endOfWeek(endOfMonth(currentMonth), { weekStartsOn: 1 }),
     });
 
     const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
@@ -61,7 +61,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlig
             </div>
 
             <div className="grid grid-cols-7 gap-1 mb-2">
-                {["CN", "T2", "T3", "T4", "T5", "T6", "T7"].map((day) => (
+                {["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map((day) => (
                     <div key={day} className="text-center text-xs font-semibold text-slate-500 uppercase tracking-wider py-2">
                         {day}
                     </div>

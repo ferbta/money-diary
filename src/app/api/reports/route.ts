@@ -70,6 +70,7 @@ export async function GET(request: NextRequest) {
         const categoryBreakdown = categoryAggregation.map((agg) => {
             const category = categories.find((c) => c.id === agg.categoryId);
             return {
+                id: category?.id,
                 category: category?.name || "Unknown",
                 amount: agg._sum.amount || 0,
                 color: `#${Math.floor(Math.random() * 16777215).toString(16)}`, // Random color for chart

@@ -35,6 +35,8 @@ const BudgetsPage = () => {
     // Form state
     const [categoryId, setCategoryId] = React.useState("");
     const [amount, setAmount] = React.useState("");
+    const [formMonth, setFormMonth] = React.useState(new Date().getMonth() + 1);
+    const [formYear, setFormYear] = React.useState(new Date().getFullYear());
 
     const fetchData = async () => {
         try {
@@ -47,12 +49,15 @@ const BudgetsPage = () => {
                 fetch(`/api/budgets?${queryParams.toString()}`),
                 fetch("/api/categories?type=EXPENSE")
             ]);
+            if (!budRes.ok) throw new Error("Failed to fetch budgets");
+            if (!catRes.ok) throw new Error("Failed to fetch categories");
+
             const budgetsData = await budRes.json();
             const categoriesData = await catRes.json();
 
-            setBudgets(budgetsData);
-            setCategories(categoriesData);
-            if (categoriesData.length > 0 && !categoryId) setCategoryId(categoriesData[0].id);
+            setBudgets(Array.isArray(budgetsData) ? budgetsData : []);
+            setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+            if (Array.isArray(categoriesData) && categoriesData.length > 0 && !categoryId) setCategoryId(categoriesData[0].id);
         } catch (err) {
             console.error("Failed to fetch data:", err);
         } finally {
@@ -99,7 +104,7 @@ const BudgetsPage = () => {
             const response = await fetch("/api/budgets", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ categoryId, amount: parseFloat(amount) }),
+                body: JSON.stringify({ categoryId, amount: parseFloat(amount), month: formMonth, year: formYear }),
             });
 
             if (!response.ok) throw new Error("Failed to set budget");
@@ -229,6 +234,22 @@ const BudgetsPage = () => {
                                 options={categories.map(c => ({ label: c.name, value: c.id }))}
                                 required
                             />
+                            <div className="grid grid-cols-2 gap-4">
+                                <Select
+                                    label="Tháng"
+                                    value={formMonth}
+                                    onChange={(e) => setFormMonth(parseInt(e.target.value))}
+                                    options={Array.from({ length: 12 }, (_, i) => ({ label: `Tháng ${i + 1}`, value: i + 1 }))}
+                                    required
+                                />
+                                <Select
+                                    label="Năm"
+                                    value={formYear}
+                                    onChange={(e) => setFormYear(parseInt(e.target.value))}
+                                    options={Array.from({ length: 5 }, (_, i) => ({ label: `${new Date().getFullYear() - 2 + i}`, value: new Date().getFullYear() - 2 + i }))}
+                                    required
+                                />
+                            </div>
                             <div className="space-y-2">
                                 <Input
                                     label="Số tiền ngân sách (₫)"

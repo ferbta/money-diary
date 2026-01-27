@@ -19,6 +19,7 @@ import Select from "@/components/ui/Select";
 import { BarChart3, PieChart as PieChartIcon, TrendingUp, TrendingDown, Layers, ChevronLeft, ChevronRight, Calendar, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Modal from "@/components/ui/Modal";
+import CategoryReportModal from "@/components/CategoryReportModal";
 import TransactionList from "@/components/TransactionList";
 import { TransactionWithCategoryAndReceipts } from "@/lib/types";
 import { Chart as ChartEvent, getElementAtEvent } from "react-chartjs-2";
@@ -47,6 +48,9 @@ const ReportsPage = () => {
     const [modalTitle, setModalTitle] = React.useState("");
     const [drilledTransactions, setDrilledTransactions] = React.useState<TransactionWithCategoryAndReceipts[]>([]);
     const [isFetchingDrill, setIsFetchingDrill] = React.useState(false);
+
+    // Category Report Modal State
+    const [isCategoryModalOpen, setIsCategoryModalOpen] = React.useState(false);
 
     const barChartRef = React.useRef<any>(null);
     const pieChartRef = React.useRef<any>(null);
@@ -267,6 +271,14 @@ const ReportsPage = () => {
                             <ChevronRight size={20} />
                         </button>
                     </div>
+
+                    <button
+                        onClick={() => setIsCategoryModalOpen(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-2xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all text-xs font-bold"
+                    >
+                        <Layers size={16} className="text-blue-500" />
+                        Theo danh mục
+                    </button>
                 </div>
             </div>
 
@@ -380,6 +392,12 @@ const ReportsPage = () => {
                     </div>
                 )}
             </Modal>
+
+            {/* Category Report Modal */}
+            <CategoryReportModal
+                isOpen={isCategoryModalOpen}
+                onClose={() => setIsCategoryModalOpen(false)}
+            />
         </div>
     );
 };

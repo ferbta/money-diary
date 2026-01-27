@@ -4,7 +4,7 @@ import React from "react";
 import Calendar from "@/components/Calendar";
 import TransactionList from "@/components/TransactionList";
 import DashboardSummary from "@/components/DashboardSummary";
-import { TransactionWithCategoryAndReceipts } from "@/lib/types";
+import { TransactionWithCategoryAndReceipts, Category } from "@/lib/types";
 import { Plus, Filter, Download } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
@@ -13,24 +13,31 @@ import { format } from "date-fns";
 const DashboardPage = () => {
     const [selectedDate, setSelectedDate] = React.useState<Date | null>(new Date());
     const [transactions, setTransactions] = React.useState<TransactionWithCategoryAndReceipts[]>([]);
+    const [categories, setCategories] = React.useState<Category[]>([]);
+    const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
 
     React.useEffect(() => {
-        const fetchTransactions = async () => {
+        const fetchData = async () => {
             try {
                 setIsLoading(true);
-                // In a real app, we'd fetch by month/year based on calendar view
-                const response = await fetch("/api/transactions");
-                const data = await response.json();
-                setTransactions(data);
+                // Fetch transactions
+                const txResponse = await fetch("/api/transactions");
+                const txData = await txResponse.json();
+                setTransactions(txData);
+
+                // Fetch categories
+                const catResponse = await fetch("/api/categories");
+                const catData = await catResponse.json();
+                setCategories(catData);
             } catch (error) {
-                console.error("Failed to fetch transactions:", error);
+                console.error("Failed to fetch data:", error);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchTransactions();
+        fetchData();
     }, []);
 
     const highlightedDates = transactions.map(tx => new Date(tx.date));
@@ -41,7 +48,13 @@ const DashboardPage = () => {
 
     const monthlyTransactions = transactions.filter(tx => {
         const d = new Date(tx.date);
-        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+        const matchesDate = d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+
+        if (selectedCategory) {
+            return matchesDate && tx.categoryId === selectedCategory;
+        }
+
+        return matchesDate;
     });
 
     const totalIncome = monthlyTransactions
@@ -94,12 +107,18 @@ const DashboardPage = () => {
                             </h3>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            <button className="px-3 py-1.5 bg-blue-600/10 text-blue-400 text-xs font-bold rounded-lg border border-blue-600/20 hover:bg-blue-600/20 transition-colors">
-                                Tuần này
-                            </button>
-                            <button className="px-3 py-1.5 bg-slate-800 text-slate-400 text-xs font-bold rounded-lg border border-slate-700 hover:text-white transition-colors">
-                                Chưa phân loại
-                            </button>
+                            {categories.map((category) => (
+                                <button
+                                    key={category.id}
+                                    onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
+                                    className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-colors ${selectedCategory === category.id
+                                        ? "bg-blue-600 text-white border-blue-500"
+                                        : "bg-slate-800 text-slate-400 border-slate-700 hover:text-white hover:border-slate-600"
+                                        }`}
+                                >
+                                    {category.name}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -126,7 +145,7 @@ const DashboardPage = () => {
                                 <div className="h-3 w-48 bg-slate-800 rounded" />
                             </div>
                         ) : (
-                            <TransactionList transactions={transactions} selectedDate={selectedDate} />
+                            <TransactionList transactions={monthlyTransactions} selectedDate={selectedDate} />
                         )}
                     </div>
                 </div>

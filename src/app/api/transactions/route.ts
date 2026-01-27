@@ -31,6 +31,10 @@ export async function GET(request: NextRequest) {
             const startOfMonth = new Date(parseInt(year), parseInt(month) - 1, 1);
             const endOfMonth = new Date(parseInt(year), parseInt(month), 0, 23, 59, 59, 999);
             where.date = { gte: startOfMonth, lte: endOfMonth };
+        } else if (year) {
+            const startOfYear = new Date(parseInt(year), 0, 1);
+            const endOfYear = new Date(parseInt(year), 11, 31, 23, 59, 59, 999);
+            where.date = { gte: startOfYear, lte: endOfYear };
         }
 
         const transactions = await prisma.transaction.findMany({

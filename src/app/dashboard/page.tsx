@@ -4,6 +4,7 @@ import React from "react";
 import Calendar from "@/components/Calendar";
 import TransactionList from "@/components/TransactionList";
 import DashboardSummary from "@/components/DashboardSummary";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { TransactionWithCategoryAndReceipts, Category } from "@/lib/types";
 import { Plus, Filter, Download } from "lucide-react";
 import Link from "next/link";

@@ -22,6 +22,7 @@ import CategoryReportModal from "@/components/CategoryReportModal";
 import TransactionList from "@/components/TransactionList";
 import { TransactionWithCategoryAndReceipts } from "@/lib/types";
 import { Chart as ChartEvent, getElementAtEvent } from "react-chartjs-2";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 ChartJS.register(
     CategoryScale,
@@ -328,7 +329,9 @@ const ReportsPage = () => {
                         </div>
                         <div className="flex-1 w-full relative">
                             {isLoading ? (
-                                <div className="absolute inset-0 flex items-center justify-center text-slate-600 italic">Đang tải dữ liệu biểu đồ...</div>
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <LoadingSpinner size={32} />
+                                </div>
                             ) : (
                                 <Bar
                                     ref={barChartRef}
@@ -352,7 +355,9 @@ const ReportsPage = () => {
                         </div>
                         <div className="flex-1 w-full relative">
                             {isLoading ? (
-                                <div className="absolute inset-0 flex items-center justify-center text-slate-600 italic">Đang tải dữ liệu biểu đồ...</div>
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <LoadingSpinner size={32} />
+                                </div>
                             ) : (
                                 <Pie
                                     ref={pieChartRef}

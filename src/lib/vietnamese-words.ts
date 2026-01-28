@@ -2,7 +2,7 @@ export const numberToVietnameseWords = (number: number): string => {
     if (number === 0) return "Không đồng";
 
     const units = ["", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
-    const unitsTen = ["", "mười", "hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi"];
+
     const powers = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ"];
 
     const readThreeDigits = (n: number, isFirstGroup: boolean): string => {

@@ -25,6 +25,11 @@ export async function GET(request: NextRequest) {
             where: {
                 date: { gte: startDate, lte: endDate },
             },
+            select: {
+                date: true,
+                amount: true,
+                type: true,
+            },
         });
 
         const monthlyData: any = {};

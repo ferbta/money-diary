@@ -3,11 +3,10 @@
 import React from "react";
 import TransactionList from "@/components/TransactionList";
 import { TransactionWithCategoryAndReceipts, Category } from "@/lib/types";
-import { Search, Filter, Download, Plus, X } from "lucide-react";
+import { Search, Download, Plus, X } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import Select from "@/components/ui/Select";
-import { cn } from "@/lib/utils";
 
 const TransactionsPage = () => {
     const [transactions, setTransactions] = React.useState<TransactionWithCategoryAndReceipts[]>([]);

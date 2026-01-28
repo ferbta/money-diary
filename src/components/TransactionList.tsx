@@ -3,7 +3,7 @@
 import React from "react";
 import { format, isSameDay } from "date-fns";
 import { vi } from "date-fns/locale";
-import { ArrowUpCircle, ArrowDownCircle, Receipt, ChevronRight, Tag } from "lucide-react";
+import { Receipt, ChevronRight } from "lucide-react";
 import { TransactionWithCategoryAndReceipts } from "@/lib/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";

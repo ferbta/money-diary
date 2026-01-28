@@ -13,7 +13,7 @@ export const ICON_OPTIONS = [
     "GraduationCap", "Hospital", "Briefcase", "Dumbbell", "Plug", "Tv", "Smartphone",
     "Umbrella", "Smile", "Heart", "Star", "Flame", "Music", "Camera", "Languages", "Fuel",
     "Wallet", "CreditCard", "PiggyBank", "Banknote", "TrendingUp", "Trophy", "Gift", "Plane", "Baby",
-    "Zap", "Droplet", "HouseWifi", "Signal", "ShoppingBag"
+    "Zap", "Droplet", "HouseWifi", "Signal", "ShoppingBag", "Stethoscope"
 ];
 
 interface IconPickerProps {

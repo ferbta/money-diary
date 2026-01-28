@@ -15,7 +15,6 @@ import {
 } from "chart.js";
 import { Bar, Pie } from "react-chartjs-2";
 import Card from "@/components/ui/Card";
-import Select from "@/components/ui/Select";
 import { BarChart3, PieChart as PieChartIcon, TrendingUp, TrendingDown, Layers, ChevronLeft, ChevronRight, Calendar, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Modal from "@/components/ui/Modal";

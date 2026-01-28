@@ -5,9 +5,7 @@ import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
+
 
 interface ReceiptUploadProps {
     onUpload: (publicIds: string[]) => void;

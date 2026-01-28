@@ -3,7 +3,7 @@
 import React from "react";
 import { useRouter, useParams } from "next/navigation";
 import { TransactionWithCategoryAndReceipts } from "@/lib/types";
-import { ArrowLeft, Edit, Trash2, Calendar, Tag, FileText, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ArrowLeft, Edit, Trash2, Calendar, Tag, FileText, X } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import { format } from "date-fns";
@@ -91,7 +91,7 @@ const TransactionDetailPage = () => {
                     </div>
                     <div className="p-8">
                         <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                            {transaction.receipts.map((receipt: { id: string; publicId: string }, idx: number) => (
+                            {transaction.receipts.map((receipt: { id: string; publicId: string }) => (
                                 <div
                                     key={receipt.id}
                                     className="relative min-w-[200px] h-[300px] rounded-2xl overflow-hidden border border-slate-800 cursor-pointer hover:border-blue-500 transition-all group"

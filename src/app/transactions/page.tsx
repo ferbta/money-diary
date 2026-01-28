@@ -7,6 +7,7 @@ import { Search, Download, Plus, X } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import Select from "@/components/ui/Select";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const TransactionsPage = () => {
     const [transactions, setTransactions] = React.useState<TransactionWithCategoryAndReceipts[]>([]);
@@ -99,10 +100,8 @@ const TransactionsPage = () => {
 
             <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-8 min-h-[400px] md:min-h-[600px] shadow-xl">
                 {isLoading ? (
-                    <div className="flex flex-col items-center justify-center py-20 animate-pulse">
-                        <div className="w-12 h-12 bg-slate-800 rounded-full mb-4" />
-                        <div className="h-4 w-32 bg-slate-800 rounded mb-2" />
-                        <div className="h-3 w-48 bg-slate-800 rounded" />
+                    <div className="flex items-center justify-center py-20">
+                        <LoadingSpinner size={40} />
                     </div>
                 ) : (
                     <TransactionList transactions={filteredTransactions} />

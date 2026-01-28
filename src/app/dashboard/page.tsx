@@ -13,6 +13,7 @@ import { format } from "date-fns";
 
 const DashboardPage = () => {
     const [selectedDate, setSelectedDate] = React.useState<Date | null>(new Date());
+    const [currentCalendarMonth, setCurrentCalendarMonth] = React.useState<Date>(new Date());
     const [transactions, setTransactions] = React.useState<TransactionWithCategoryAndReceipts[]>([]);
     const [categories, setCategories] = React.useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
@@ -41,15 +42,29 @@ const DashboardPage = () => {
         fetchData();
     }, []);
 
+    // Reset selectedDate if it's not in the current calendar month
+    React.useEffect(() => {
+        if (selectedDate) {
+            const selectedMonth = selectedDate.getMonth();
+            const selectedYear = selectedDate.getFullYear();
+            const calendarMonth = currentCalendarMonth.getMonth();
+            const calendarYear = currentCalendarMonth.getFullYear();
+
+            if (selectedMonth !== calendarMonth || selectedYear !== calendarYear) {
+                setSelectedDate(null);
+            }
+        }
+    }, [currentCalendarMonth, selectedDate]);
+
     const highlightedDates = transactions.map(tx => new Date(tx.date));
 
-    // Calculate totals for current month
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+    // Use calendar's selected month instead of current month
+    const selectedMonth = currentCalendarMonth.getMonth();
+    const selectedYear = currentCalendarMonth.getFullYear();
 
     const monthlyTransactions = transactions.filter(tx => {
         const d = new Date(tx.date);
-        const matchesDate = d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+        const matchesDate = d.getMonth() === selectedMonth && d.getFullYear() === selectedYear;
 
         if (selectedCategory) {
             return matchesDate && tx.categoryId === selectedCategory;
@@ -65,6 +80,22 @@ const DashboardPage = () => {
     const totalExpense = monthlyTransactions
         .filter(tx => tx.type === "EXPENSE")
         .reduce((sum, tx) => sum + tx.amount, 0);
+
+    // Filter transactions for display
+    // If category is selected: show all transactions of that category in calendar's current month
+    // If no category: show all transactions of calendar's current month (date filtering handled by TransactionList)
+    const displayTransactions = selectedCategory
+        ? transactions.filter(tx => {
+            const d = new Date(tx.date);
+            return tx.categoryId === selectedCategory
+                && d.getMonth() === selectedMonth
+                && d.getFullYear() === selectedYear;
+        })
+        : transactions.filter(tx => {
+            const d = new Date(tx.date);
+            return d.getMonth() === selectedMonth
+                && d.getFullYear() === selectedYear;
+        });
 
     return (
         <div className="max-w-7xl mx-auto w-full space-y-8">
@@ -98,6 +129,7 @@ const DashboardPage = () => {
                         selectedDate={selectedDate}
                         onDateSelect={setSelectedDate}
                         highlightedDates={highlightedDates}
+                        onMonthChange={setCurrentCalendarMonth}
                     />
 
                     <div className="bg-slate-900/40 border border-slate-800 rounded-3xl p-6">
@@ -131,7 +163,10 @@ const DashboardPage = () => {
                             <h2 className="text-xl md:text-2xl font-bold text-white">
                                 Giao dịch
                                 <span className="ml-3 text-xs md:text-sm font-medium text-slate-500">
-                                    {selectedDate ? format(selectedDate, "dd/MM/yyyy") : "Gần đây"}
+                                    {selectedCategory
+                                        ? categories.find(c => c.id === selectedCategory)?.name || "Danh mục"
+                                        : selectedDate ? format(selectedDate, "dd/MM/yyyy") : "Gần đây"
+                                    }
                                 </span>
                             </h2>
                             <Link href="/transactions" className="text-sm font-semibold text-blue-500 hover:text-blue-400 transition-colors">
@@ -146,7 +181,10 @@ const DashboardPage = () => {
                                 <div className="h-3 w-48 bg-slate-800 rounded" />
                             </div>
                         ) : (
-                            <TransactionList transactions={monthlyTransactions} selectedDate={selectedDate} />
+                            <TransactionList
+                                transactions={displayTransactions}
+                                selectedDate={selectedCategory ? null : selectedDate}
+                            />
                         )}
                     </div>
                 </div>

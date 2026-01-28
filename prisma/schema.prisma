@@ -18,14 +18,15 @@ enum TransactionType {
 }
 
 model Category {
-  id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  icon         String?
-  type         CategoryType
-  transactions Transaction[]
-  budgets      Budget[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  icon            String?
+  type            CategoryType
+  transactions    Transaction[]
+  budgets         Budget[]
+  budgetTemplates BudgetTemplate[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model Transaction {
@@ -61,4 +62,15 @@ model Receipt {
   transactionId String      @db.ObjectId
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+}
+
+model BudgetTemplate {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  amount     Float
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String   @db.ObjectId
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([categoryId])
 }

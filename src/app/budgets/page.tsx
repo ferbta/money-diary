@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Category, BudgetWithCategory } from "@/lib/types";
-import { Wallet, Plus, TrendingUp, Info } from "lucide-react";
+import { Wallet, Plus, TrendingUp, Info, Settings } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
@@ -15,8 +15,10 @@ import { TransactionWithCategoryAndReceipts } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { useRouter } from "next/navigation";
 
 const BudgetsPage = () => {
+    const router = useRouter();
     const [budgets, setBudgets] = React.useState<(BudgetWithCategory & { usedAmount: number })[]>([]);
     const [categories, setCategories] = React.useState<Category[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
@@ -152,6 +154,15 @@ const BudgetsPage = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4">
+                    {/* Budget Templates Button */}
+                    <Button
+                        onClick={() => router.push("/budgets/templates")}
+                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    >
+                        <Settings size={18} className="mr-2" />
+                        Thiết lập mặc định
+                    </Button>
+
                     {/* View Mode Toggle */}
                     <div className="flex p-1 bg-slate-900 border border-slate-800 rounded-2xl">
                         <button

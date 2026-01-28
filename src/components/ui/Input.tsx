@@ -31,7 +31,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         if (props.type === "date") {
                             try {
                                 (e.target as any).showPicker();
-                            } catch (error) {
+                            } catch {
                                 // Fallback for browsers that don't support showPicker()
                             }
                         }

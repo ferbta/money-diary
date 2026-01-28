@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Category, BudgetWithCategory } from "@/lib/types";
-import { Wallet, Plus, AlertCircle, TrendingUp, Info } from "lucide-react";
+import { Wallet, Plus, TrendingUp, Info } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
@@ -18,7 +18,6 @@ import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-reac
 const BudgetsPage = () => {
     const [budgets, setBudgets] = React.useState<(BudgetWithCategory & { usedAmount: number })[]>([]);
     const [categories, setCategories] = React.useState<Category[]>([]);
-    const [isLoading, setIsLoading] = React.useState(true);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
 
     // Period state
@@ -40,7 +39,6 @@ const BudgetsPage = () => {
 
     const fetchData = async () => {
         try {
-            setIsLoading(true);
             const queryParams = new URLSearchParams();
             if (viewMode === "month") queryParams.append("month", month.toString());
             queryParams.append("year", year.toString());
@@ -60,8 +58,6 @@ const BudgetsPage = () => {
             if (Array.isArray(categoriesData) && categoriesData.length > 0 && !categoryId) setCategoryId(categoriesData[0].id);
         } catch (err) {
             console.error("Failed to fetch data:", err);
-        } finally {
-            setIsLoading(false);
         }
     };
 

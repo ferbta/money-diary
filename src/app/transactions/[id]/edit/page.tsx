@@ -9,7 +9,7 @@ import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Card from "@/components/ui/Card";
 import ReceiptUpload from "@/components/ReceiptUpload";
-import Link from "next/link";
+
 import { numberToVietnameseWords } from "@/lib/vietnamese-words";
 
 const EditTransactionPage = () => {

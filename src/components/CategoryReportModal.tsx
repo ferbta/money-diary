@@ -5,7 +5,7 @@ import Modal from "@/components/ui/Modal";
 import Select from "@/components/ui/Select";
 import TransactionList from "@/components/TransactionList";
 import { TransactionWithCategoryAndReceipts, Category } from "@/lib/types";
-import { Filter, Archive } from "lucide-react";
+import { Archive } from "lucide-react";
 
 interface CategoryReportModalProps {
     isOpen: boolean;

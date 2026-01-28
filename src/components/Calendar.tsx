@@ -27,10 +27,16 @@ interface CalendarProps {
     onDateSelect: (date: Date) => void;
     highlightedDates?: Date[];
     className?: string;
+    onMonthChange?: (month: Date) => void;
 }
 
-const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlightedDates = [], className }) => {
+const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect, highlightedDates = [], className, onMonthChange }) => {
     const [currentMonth, setCurrentMonth] = React.useState(new Date());
+
+    // Notify parent when month changes
+    React.useEffect(() => {
+        onMonthChange?.(currentMonth);
+    }, [currentMonth, onMonthChange]);
 
     const days = eachDayOfInterval({
         start: startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 1 }),

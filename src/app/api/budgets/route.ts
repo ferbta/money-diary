@@ -11,6 +11,30 @@ export async function GET(request: NextRequest) {
         const startDate = new Date(year, month - 1, 1);
         const endDate = new Date(year, month, 0, 23, 59, 59, 999);
 
+        // Check if budgets exist for this period
+        const existingBudgets = await prisma.budget.findMany({
+            where: {
+                month: month,
+                year: year
+            }
+        });
+
+        // If no budgets exist for this period, create them from templates
+        if (existingBudgets.length === 0) {
+            const templates = await prisma.budgetTemplate.findMany();
+
+            if (templates.length > 0) {
+                await prisma.budget.createMany({
+                    data: templates.map((template: { categoryId: string; amount: number }) => ({
+                        categoryId: template.categoryId,
+                        amount: template.amount,
+                        month: month,
+                        year: year
+                    }))
+                });
+            }
+        }
+
         const budgets = await prisma.budget.findMany({
             where: {
                 month: month,

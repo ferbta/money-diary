@@ -227,31 +227,41 @@ const ReportsPage = () => {
                     <p className="text-slate-400 text-sm md:text-base mt-1 italic">Phân tích thói quen chi tiêu và thu nhập của bạn</p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                    {/* View Mode Toggle */}
-                    <div className="flex p-1 bg-slate-900 border border-slate-800 rounded-2xl">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                        {/* View Mode Toggle */}
+                        <div className="flex p-1 bg-slate-900 border border-slate-800 rounded-2xl">
+                            <button
+                                onClick={() => setViewMode("month")}
+                                className={cn(
+                                    "px-4 py-2 text-xs font-bold rounded-xl transition-all",
+                                    viewMode === "month" ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40" : "text-slate-500 hover:text-slate-400"
+                                )}
+                            >
+                                Tháng
+                            </button>
+                            <button
+                                onClick={() => setViewMode("year")}
+                                className={cn(
+                                    "px-4 py-2 text-xs font-bold rounded-xl transition-all",
+                                    viewMode === "year" ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40" : "text-slate-500 hover:text-slate-400"
+                                )}
+                            >
+                                Năm
+                            </button>
+                        </div>
+
                         <button
-                            onClick={() => setViewMode("month")}
-                            className={cn(
-                                "px-4 py-2 text-xs font-bold rounded-xl transition-all",
-                                viewMode === "month" ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40" : "text-slate-500 hover:text-slate-400"
-                            )}
+                            onClick={() => setIsCategoryModalOpen(true)}
+                            className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-2xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all text-xs font-bold whitespace-nowrap"
                         >
-                            Tháng
-                        </button>
-                        <button
-                            onClick={() => setViewMode("year")}
-                            className={cn(
-                                "px-4 py-2 text-xs font-bold rounded-xl transition-all",
-                                viewMode === "year" ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40" : "text-slate-500 hover:text-slate-400"
-                            )}
-                        >
-                            Năm
+                            <Layers size={16} className="text-blue-500" />
+                            Theo danh mục
                         </button>
                     </div>
 
                     {/* Period Navigator */}
-                    <div className="flex items-center gap-4 bg-slate-900/50 border border-slate-800 rounded-2xl px-2 py-1">
+                    <div className="flex items-center justify-between w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-2 py-1">
                         <button
                             onClick={handlePrev}
                             className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent hover:border-slate-700"
@@ -271,14 +281,6 @@ const ReportsPage = () => {
                             <ChevronRight size={20} />
                         </button>
                     </div>
-
-                    <button
-                        onClick={() => setIsCategoryModalOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-2xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all text-xs font-bold"
-                    >
-                        <Layers size={16} className="text-blue-500" />
-                        Theo danh mục
-                    </button>
                 </div>
             </div>
 

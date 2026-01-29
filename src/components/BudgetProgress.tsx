@@ -3,6 +3,7 @@
 import React from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { AlertTriangle } from "lucide-react";
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -38,10 +39,10 @@ const BudgetProgress: React.FC<BudgetProgressProps> = ({ category, limit, used, 
                 </div>
                 <div className="text-right">
                     <span className={cn(
-                        "text-xs font-bold px-2 py-1 rounded-md border",
+                        "text-xs font-bold px-2 py-1 rounded-md border flex items-center gap-1",
                         isOver ? "bg-rose-500/10 text-rose-500 border-rose-500/20" : "bg-blue-500/10 text-blue-400 border-blue-500/20"
                     )}>
-                        {isOver ? "Vượt ngân sách" : `Còn ${Math.round(100 - percentage)}%`}
+                        {isOver ? <AlertTriangle size={26} /> : `Còn ${Math.round(100 - percentage)}%`}
                     </span>
                 </div>
             </div>

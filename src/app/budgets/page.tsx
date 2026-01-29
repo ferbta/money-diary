@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Category, BudgetWithCategory } from "@/lib/types";
-import { Wallet, Plus, TrendingUp, Info, Settings } from "lucide-react";
+import { Wallet, Plus, TrendingUp, Info, Settings, Minus } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
@@ -34,6 +34,7 @@ const BudgetsPage = () => {
     const [selectedCategory, setSelectedCategory] = React.useState<Category | null>(null);
     const [categoryTransactions, setCategoryTransactions] = React.useState<TransactionWithCategoryAndReceipts[]>([]);
     const [isFetchingTransactions, setIsFetchingTransactions] = React.useState(false);
+    const [isSetupExpanded, setIsSetupExpanded] = React.useState(false);
 
     // Form state
     const [categoryId, setCategoryId] = React.useState("");
@@ -153,40 +154,42 @@ const BudgetsPage = () => {
                     <p className="text-slate-400 text-sm md:text-base mt-1 italic">Kiểm soát chi tiêu bằng cách đặt hạn mức</p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                    {/* Budget Templates Button */}
-                    <Button
-                        onClick={() => router.push("/budgets/templates")}
-                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                    >
-                        <Settings size={18} className="mr-2" />
-                        Thiết lập mặc định
-                    </Button>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                    <div className="flex items-center gap-3">
+                        {/* Budget Templates Button */}
+                        <Button
+                            onClick={() => router.push("/budgets/templates")}
+                            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 whitespace-nowrap"
+                        >
+                            <Settings size={18} className="mr-2" />
+                            Thiết lập mặc định
+                        </Button>
 
-                    {/* View Mode Toggle */}
-                    <div className="flex p-1 bg-slate-900 border border-slate-800 rounded-2xl">
-                        <button
-                            onClick={() => setViewMode("month")}
-                            className={cn(
-                                "px-4 py-2 text-xs font-bold rounded-xl transition-all",
-                                viewMode === "month" ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40" : "text-slate-500 hover:text-slate-400"
-                            )}
-                        >
-                            Tháng
-                        </button>
-                        <button
-                            onClick={() => setViewMode("year")}
-                            className={cn(
-                                "px-4 py-2 text-xs font-bold rounded-xl transition-all",
-                                viewMode === "year" ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40" : "text-slate-500 hover:text-slate-400"
-                            )}
-                        >
-                            Năm
-                        </button>
+                        {/* View Mode Toggle */}
+                        <div className="flex p-1 bg-slate-900 border border-slate-800 rounded-2xl">
+                            <button
+                                onClick={() => setViewMode("month")}
+                                className={cn(
+                                    "px-4 py-2 text-xs font-bold rounded-xl transition-all",
+                                    viewMode === "month" ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40" : "text-slate-500 hover:text-slate-400"
+                                )}
+                            >
+                                Tháng
+                            </button>
+                            <button
+                                onClick={() => setViewMode("year")}
+                                className={cn(
+                                    "px-4 py-2 text-xs font-bold rounded-xl transition-all",
+                                    viewMode === "year" ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40" : "text-slate-500 hover:text-slate-400"
+                                )}
+                            >
+                                Năm
+                            </button>
+                        </div>
                     </div>
 
                     {/* Period Navigator */}
-                    <div className="flex items-center gap-4 bg-slate-900/50 border border-slate-800 rounded-2xl px-2 py-1">
+                    <div className="flex items-center justify-between w-full bg-slate-900/50 border border-slate-800 rounded-2xl px-2 py-1">
                         <button
                             onClick={handlePrev}
                             className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent hover:border-slate-700"
@@ -242,54 +245,69 @@ const BudgetsPage = () => {
                             </div>
                         </Card>
 
-                        <Card title="Thiết lập ngân sách" subtitle="Thêm hoặc cập nhật hạn mức chi tiêu">
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <Select
-                                    label="Danh mục"
-                                    value={categoryId}
-                                    onChange={(e) => setCategoryId(e.target.value)}
-                                    options={categories.map(c => ({ label: c.name, value: c.id }))}
-                                    required
-                                />
-                                <div className="grid grid-cols-2 gap-4">
-                                    <Select
-                                        label="Tháng"
-                                        value={formMonth}
-                                        onChange={(e) => setFormMonth(parseInt(e.target.value))}
-                                        options={Array.from({ length: 12 }, (_, i) => ({ label: `Tháng ${i + 1}`, value: i + 1 }))}
-                                        required
-                                    />
-                                    <Select
-                                        label="Năm"
-                                        value={formYear}
-                                        onChange={(e) => setFormYear(parseInt(e.target.value))}
-                                        options={Array.from({ length: 5 }, (_, i) => ({ label: `${new Date().getFullYear() - 2 + i}`, value: new Date().getFullYear() - 2 + i }))}
-                                        required
-                                    />
+                        <Card>
+                            <div
+                                className="flex items-center justify-between cursor-pointer hover:opacity-80 transition-opacity mb-6"
+                                onClick={() => setIsSetupExpanded(!isSetupExpanded)}
+                            >
+                                <div>
+                                    <h3 className="text-xl font-semibold text-white">Thiết lập ngân sách</h3>
+                                    <p className="text-slate-400 text-sm mt-1">Thêm hoặc cập nhật hạn mức chi tiêu</p>
                                 </div>
-                                <div className="space-y-2">
-                                    <Input
-                                        label="Số tiền ngân sách (₫)"
-                                        type="text"
-                                        placeholder="0"
-                                        value={amount ? parseInt(amount).toLocaleString("vi-VN") : ""}
-                                        onChange={(e) => {
-                                            const val = e.target.value.replace(/\D/g, "");
-                                            setAmount(val);
-                                        }}
+                                <button className="p-2 hover:bg-slate-800 rounded-lg transition-colors">
+                                    {isSetupExpanded ? <Minus size={20} className="text-slate-400" /> : <Plus size={20} className="text-slate-400" />}
+                                </button>
+                            </div>
+                            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isSetupExpanded ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+                                }`}>
+                                <form onSubmit={handleSubmit} className="space-y-4">
+                                    <Select
+                                        label="Danh mục"
+                                        value={categoryId}
+                                        onChange={(e) => setCategoryId(e.target.value)}
+                                        options={categories.map(c => ({ label: c.name, value: c.id }))}
                                         required
                                     />
-                                    {amount && (
-                                        <p className="text-blue-400 text-xs font-medium ml-1 bg-blue-500/10 p-2 rounded-lg border border-blue-500/20">
-                                            {numberToVietnameseWords(parseInt(amount))}
-                                        </p>
-                                    )}
-                                </div>
-                                <Button type="submit" className="w-full" isLoading={isSubmitting}>
-                                    <Plus size={18} className="mr-2" />
-                                    Thiết lập ngân sách
-                                </Button>
-                            </form>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <Select
+                                            label="Tháng"
+                                            value={formMonth}
+                                            onChange={(e) => setFormMonth(parseInt(e.target.value))}
+                                            options={Array.from({ length: 12 }, (_, i) => ({ label: `Tháng ${i + 1}`, value: i + 1 }))}
+                                            required
+                                        />
+                                        <Select
+                                            label="Năm"
+                                            value={formYear}
+                                            onChange={(e) => setFormYear(parseInt(e.target.value))}
+                                            options={Array.from({ length: 5 }, (_, i) => ({ label: `${new Date().getFullYear() - 2 + i}`, value: new Date().getFullYear() - 2 + i }))}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Input
+                                            label="Số tiền ngân sách (₫)"
+                                            type="text"
+                                            placeholder="0"
+                                            value={amount ? parseInt(amount).toLocaleString("vi-VN") : ""}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/\D/g, "");
+                                                setAmount(val);
+                                            }}
+                                            required
+                                        />
+                                        {amount && (
+                                            <p className="text-blue-400 text-xs font-medium ml-1 bg-blue-500/10 p-2 rounded-lg border border-blue-500/20">
+                                                {numberToVietnameseWords(parseInt(amount))}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <Button type="submit" className="w-full" isLoading={isSubmitting}>
+                                        <Plus size={18} className="mr-2" />
+                                        Thiết lập ngân sách
+                                    </Button>
+                                </form>
+                            </div>
                         </Card>
 
                         <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-3xl flex items-start gap-4">

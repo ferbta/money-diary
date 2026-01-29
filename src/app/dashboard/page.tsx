@@ -6,7 +6,7 @@ import TransactionList from "@/components/TransactionList";
 import DashboardSummary from "@/components/DashboardSummary";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { TransactionWithCategoryAndReceipts, Category } from "@/lib/types";
-import { Plus, Filter, Download } from "lucide-react";
+import { Plus, Filter, Download, Minus } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { format } from "date-fns";
@@ -18,6 +18,7 @@ const DashboardPage = () => {
     const [categories, setCategories] = React.useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
+    const [isFilterExpanded, setIsFilterExpanded] = React.useState(false);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -133,25 +134,34 @@ const DashboardPage = () => {
                     />
 
                     <div className="bg-slate-900/40 border border-slate-800 rounded-3xl p-6">
-                        <div className="flex items-center justify-between mb-4">
+                        <div
+                            className="flex items-center justify-between cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => setIsFilterExpanded(!isFilterExpanded)}
+                        >
                             <h3 className="font-semibold text-white flex items-center gap-2">
                                 <Filter size={18} className="text-blue-500" />
                                 Lọc nhanh
                             </h3>
+                            <button className="p-1 hover:bg-slate-800 rounded-lg transition-colors">
+                                {isFilterExpanded ? <Minus size={18} className="text-slate-400" /> : <Plus size={18} className="text-slate-400" />}
+                            </button>
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                            {categories.map((category) => (
-                                <button
-                                    key={category.id}
-                                    onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
-                                    className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-colors ${selectedCategory === category.id
-                                        ? "bg-blue-600 text-white border-blue-500"
-                                        : "bg-slate-800 text-slate-400 border-slate-700 hover:text-white hover:border-slate-600"
-                                        }`}
-                                >
-                                    {category.name}
-                                </button>
-                            ))}
+                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isFilterExpanded ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'
+                            }`}>
+                            <div className="flex flex-wrap gap-2">
+                                {categories.map((category) => (
+                                    <button
+                                        key={category.id}
+                                        onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
+                                        className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-colors ${selectedCategory === category.id
+                                            ? "bg-blue-600 text-white border-blue-500"
+                                            : "bg-slate-800 text-slate-400 border-slate-700 hover:text-white hover:border-slate-600"
+                                            }`}
+                                    >
+                                        {category.name}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>

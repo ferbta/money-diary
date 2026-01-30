@@ -3,7 +3,8 @@
 import React from "react";
 import TransactionList from "@/components/TransactionList";
 import { TransactionWithCategoryAndReceipts, Category } from "@/lib/types";
-import { Search, Download, Plus, X } from "lucide-react";
+import { Search, Plus, X } from "lucide-react";
+import DownloadDropdown from "@/components/DownloadDropdown";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import Select from "@/components/ui/Select";
@@ -43,6 +44,47 @@ const TransactionsPage = () => {
         const matchesCategory = selectedCategoryId === "" || tx.categoryId === selectedCategoryId;
         return matchesSearch && matchesCategory;
     });
+
+    const handleDownloadCSV = () => {
+        // Create CSV content with Vietnamese headers
+        const headers = ["Ngày nhập", "Thông tin", "Loại", "Danh mục", "Số tiền"];
+        const csvRows = [headers.join(",")];
+
+        filteredTransactions.forEach(tx => {
+            const date = new Date(tx.date).toLocaleDateString("vi-VN");
+            const description = (tx.description || "").replace(/"/g, '""'); // Escape quotes
+            const type = tx.type === "EXPENSE" ? "Chi phí" : "Thu nhập";
+            const category = tx.category.name.replace(/"/g, '""'); // Escape quotes
+            const amount = tx.amount.toLocaleString("vi-VN");
+
+            csvRows.push(`"${date}","${description}","${type}","${category}","${amount}"`);
+        });
+
+        // Add UTF-8 BOM for proper Vietnamese character display
+        const csvContent = "\uFEFF" + csvRows.join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `giao-dich_${new Date().toISOString().split("T")[0]}.csv`);
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const handleDownloadJSON = () => {
+        const jsonContent = JSON.stringify(filteredTransactions, null, 2);
+        const blob = new Blob([jsonContent], { type: "application/json" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `giao-dich_${new Date().toISOString().split("T")[0]}.json`);
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     return (
         <div className="max-w-5xl mx-auto w-full space-y-8 pb-20">
@@ -92,9 +134,10 @@ const TransactionsPage = () => {
                             </button>
                         )}
                     </div>
-                    <Button variant="outline" className="shrink-0 p-3">
-                        <Download size={18} />
-                    </Button>
+                    <DownloadDropdown
+                        onDownloadCSV={handleDownloadCSV}
+                        onDownloadJSON={handleDownloadJSON}
+                    />
                 </div>
             </div>
 

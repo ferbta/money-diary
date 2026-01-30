@@ -107,10 +107,6 @@ const DashboardPage = () => {
                     <p className="text-slate-400 text-sm md:text-base mt-1">Quản lý và theo dõi tài sản của bạn</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" className="hidden sm:flex items-center gap-2">
-                        <Download size={18} />
-                        Xuất dữ liệu
-                    </Button>
                     <Link href="/transactions/new" className="w-full sm:w-auto">
                         <Button className="w-full sm:w-auto flex items-center justify-center gap-2 pr-5">
                             <Plus size={18} />

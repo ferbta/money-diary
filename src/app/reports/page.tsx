@@ -49,11 +49,18 @@ const ReportsPage = () => {
     const [drilledTransactions, setDrilledTransactions] = React.useState<TransactionWithCategoryAndReceipts[]>([]);
     const [isFetchingDrill, setIsFetchingDrill] = React.useState(false);
 
-    // Category Report Modal State
     const [isCategoryModalOpen, setIsCategoryModalOpen] = React.useState(false);
+    const [isMobile, setIsMobile] = React.useState(false);
 
     const barChartRef = React.useRef<any>(null);
     const pieChartRef = React.useRef<any>(null);
+
+    React.useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     React.useEffect(() => {
         const fetchReport = async () => {
@@ -321,7 +328,7 @@ const ReportsPage = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
                 <div className="lg:col-span-8">
-                    <Card className="h-[400px] md:h-[500px] flex flex-col p-4 md:p-8 mx-[-1rem] sm:mx-0 rounded-none sm:rounded-3xl border-x-0 sm:border-x">
+                    <Card className="h-[500px] md:h-[600px] flex flex-col p-4 md:p-8 mx-[-1rem] sm:mx-0 rounded-none sm:rounded-3xl border-x-0 sm:border-x">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                             <h3 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
                                 <BarChart3 size={20} className="text-blue-500" />
@@ -347,7 +354,7 @@ const ReportsPage = () => {
                 </div>
 
                 <div className="lg:col-span-4">
-                    <Card className="h-[400px] md:h-[500px] flex flex-col p-4 md:p-8 mx-[-1rem] sm:mx-0 rounded-none sm:rounded-3xl border-x-0 sm:border-x">
+                    <Card className="h-[500px] md:h-[600px] flex flex-col p-4 md:p-8 mx-[-1rem] sm:mx-0 rounded-none sm:rounded-3xl border-x-0 sm:border-x">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                             <h3 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
                                 <PieChartIcon size={20} className="text-indigo-500" />
@@ -364,11 +371,46 @@ const ReportsPage = () => {
                                 <Pie
                                     ref={pieChartRef}
                                     data={pieChartData}
-                                    options={{ ...chartOptions, scales: undefined }}
+                                    options={{
+                                        ...chartOptions,
+                                        scales: undefined,
+                                        plugins: {
+                                            ...chartOptions.plugins,
+                                            legend: {
+                                                ...chartOptions.plugins?.legend,
+                                                display: !isMobile
+                                            }
+                                        }
+                                    }}
                                     onClick={onPieClick}
                                 />
                             )}
                         </div>
+
+                        {/* Custom Legend for Mobile */}
+                        {isMobile && reportData?.categoryBreakdown && (
+                            <div className="mt-6 flex flex-wrap justify-center gap-x-4 gap-y-3 max-h-[160px] overflow-y-auto px-2 custom-scrollbar border-t border-slate-800/50 pt-4">
+                                {reportData.categoryBreakdown.map((category: any, index: number) => (
+                                    <button
+                                        key={category.id}
+                                        onClick={() => handleDrillDown({
+                                            type: "EXPENSE",
+                                            categoryId: category.id,
+                                            title: `Chi tiêu: ${category.category}`
+                                        })}
+                                        className="flex items-center gap-2 group transition-all active:scale-95 bg-slate-900/40 px-2 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700"
+                                    >
+                                        <div
+                                            className="w-2.5 h-2.5 rounded-full border border-white/20 shadow-sm"
+                                            style={{ backgroundColor: pieChartData.datasets[0].backgroundColor[index % pieChartData.datasets[0].backgroundColor.length] }}
+                                        />
+                                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-white transition-colors">
+                                            {category.category}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </Card>
                 </div>
             </div>

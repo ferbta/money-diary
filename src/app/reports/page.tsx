@@ -435,7 +435,20 @@ const ReportsPage = () => {
                                 <p>Không có giao dịch nào trong giai đoạn này</p>
                             </div>
                         ) : (
-                            <TransactionList transactions={drilledTransactions} />
+                            <div className="space-y-6">
+                                <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-between shadow-sm">
+                                    <div className="flex items-center gap-2">
+                                        <div className="p-1.5 bg-blue-500/20 rounded-lg text-blue-400">
+                                            <TrendingUp size={16} />
+                                        </div>
+                                        <span className="text-sm font-bold text-blue-400 uppercase tracking-tight">Tổng cộng</span>
+                                    </div>
+                                    <span className="text-xl md:text-2xl font-black text-white">
+                                        {drilledTransactions.reduce((sum, tx) => sum + tx.amount, 0).toLocaleString("vi-VN")}₫
+                                    </span>
+                                </div>
+                                <TransactionList transactions={drilledTransactions} />
+                            </div>
                         )}
                     </div>
                 )}

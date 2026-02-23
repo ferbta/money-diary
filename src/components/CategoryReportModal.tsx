@@ -155,7 +155,7 @@ const CategoryReportModal: React.FC<CategoryReportModalProps> = ({ isOpen, onClo
                 </div>
 
                 {/* Transaction List */}
-                <div className="min-h-[300px] max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="min-h-[300px] max-h-[50vh] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
                     {isLoading ? (
                         <div className="flex flex-col items-center justify-center py-20 animate-pulse">
                             <div className="w-12 h-12 bg-slate-800 rounded-full mb-4" />

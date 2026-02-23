@@ -328,7 +328,7 @@ const ReportsPage = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
                 <div className="lg:col-span-8">
-                    <Card className="h-[500px] md:h-[600px] flex flex-col p-4 md:p-8 mx-[-1rem] sm:mx-0 rounded-none sm:rounded-3xl border-x-0 sm:border-x">
+                    <Card className="h-[500px] md:h-[600px] flex flex-col p-4 md:p-8">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                             <h3 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
                                 <BarChart3 size={20} className="text-blue-500" />
@@ -354,7 +354,7 @@ const ReportsPage = () => {
                 </div>
 
                 <div className="lg:col-span-4">
-                    <Card className="h-[500px] md:h-[600px] flex flex-col p-4 md:p-8 mx-[-1rem] sm:mx-0 rounded-none sm:rounded-3xl border-x-0 sm:border-x">
+                    <Card className="h-[500px] md:h-[600px] flex flex-col p-4 md:p-8">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                             <h3 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
                                 <PieChartIcon size={20} className="text-indigo-500" />
@@ -447,7 +447,7 @@ const ReportsPage = () => {
                                         {drilledTransactions.reduce((sum, tx) => sum + tx.amount, 0).toLocaleString("vi-VN")}₫
                                     </span>
                                 </div>
-                                <TransactionList transactions={drilledTransactions} />
+                                <TransactionList transactions={drilledTransactions} isMobile={isMobile} />
                             </div>
                         )}
                     </div>

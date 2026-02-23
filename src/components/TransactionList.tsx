@@ -17,9 +17,10 @@ function cn(...inputs: ClassValue[]) {
 interface TransactionListProps {
     transactions: TransactionWithCategoryAndReceipts[];
     selectedDate?: Date | null;
+    isMobile?: boolean;
 }
 
-const TransactionList: React.FC<TransactionListProps> = ({ transactions, selectedDate }) => {
+const TransactionList: React.FC<TransactionListProps> = ({ transactions, selectedDate, isMobile }) => {
     const filteredTransactions = selectedDate
         ? transactions.filter(tx => isSameDay(new Date(tx.date), selectedDate))
         : transactions;
@@ -49,7 +50,9 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, selecte
                 <div key={dateStr} className="space-y-4">
                     <div className="flex items-center justify-between sticky top-0 z-10 bg-slate-950/80 backdrop-blur-sm py-2">
                         <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-                            {format(new Date(dateStr), "EEEE, d MMMM yyyy", { locale: vi })}
+                            {isMobile
+                                ? format(new Date(dateStr), "EEEEEE, dd/MM/yyyy", { locale: vi })
+                                : format(new Date(dateStr), "EEEE, d MMMM yyyy", { locale: vi })}
                         </h3>
                         <span className="text-xs font-medium text-slate-500 bg-slate-900 px-2 py-1 rounded-md border border-slate-800">
                             {groupedTransactions[dateStr].length} mục

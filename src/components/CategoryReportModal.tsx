@@ -68,6 +68,15 @@ const CategoryReportModal: React.FC<CategoryReportModalProps> = ({ isOpen, onClo
         fetchTransactions();
     }, [isOpen, selectedMonth, selectedYear, selectedCategory]);
 
+    const [isMobile, setIsMobile] = React.useState(false);
+
+    React.useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
     const totalIncome = transactions
         .filter(t => t.type === "INCOME")
         .reduce((sum, t) => sum + t.amount, 0);
@@ -153,7 +162,7 @@ const CategoryReportModal: React.FC<CategoryReportModalProps> = ({ isOpen, onClo
                             <div className="h-4 w-32 bg-slate-800 rounded mb-2" />
                         </div>
                     ) : transactions.length > 0 ? (
-                        <TransactionList transactions={transactions} />
+                        <TransactionList transactions={transactions} isMobile={isMobile} />
                     ) : (
                         <div className="flex flex-col items-center justify-center py-20 text-slate-500">
                             <Archive size={48} className="opacity-20 mb-4" />

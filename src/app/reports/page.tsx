@@ -227,7 +227,7 @@ const ReportsPage = () => {
     const totalExpense = reportData?.monthlyTrend?.reduce((sum: number, d: any) => sum + d.expense, 0) || 0;
 
     return (
-        <div className="max-w-7xl mx-auto w-full space-y-8 pb-20">
+        <div className="max-w-7xl mx-auto w-full space-y-8 pb-20 overflow-x-hidden">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div>
                     <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Báo Cáo Tài Chính</h1>
@@ -235,7 +235,7 @@ const ReportsPage = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                    <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
                         {/* View Mode Toggle */}
                         <div className="flex p-1 bg-slate-900 border border-slate-800 rounded-2xl">
                             <button
@@ -428,7 +428,7 @@ const ReportsPage = () => {
                         <div className="h-4 w-32 bg-slate-800 rounded mb-2" />
                     </div>
                 ) : (
-                    <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="max-h-[60vh] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
                         {drilledTransactions.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-20 text-slate-500 italic">
                                 <Info size={48} className="opacity-20 mb-4" />
